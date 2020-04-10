@@ -1,15 +1,11 @@
 #![allow(non_upper_case_globals)]
 
 use paste::item;
-
 mod ffi;
 
 pub mod context;
-pub mod properties;
 pub mod traits;
-
 pub use context::*;
-pub use properties::*;
 pub use traits::*;
 
 use obs_sys::{
@@ -22,6 +18,7 @@ use obs_sys::{
 };
 
 use super::{
+    properties::*,
     graphics::{
         GraphicsAllowDirectRendering, GraphicsColorFormat, GraphicsEffect, GraphicsEffectContext,
     },

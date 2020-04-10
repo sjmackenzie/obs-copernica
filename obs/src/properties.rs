@@ -1,4 +1,4 @@
-use super::ObsString;
+use crate::string::ObsString;
 use obs_sys::{
     obs_data_get_double, obs_data_get_int, obs_data_get_json, obs_data_t, obs_properties_add_float,
     obs_properties_add_float_slider, obs_properties_add_int, obs_properties_t,

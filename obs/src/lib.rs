@@ -9,7 +9,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! obs-wrapper = "0.1"
+//! obs = "0.1"
 //!
 //! [lib]
 //! name = "<module-name>"
@@ -23,7 +23,7 @@
 //! 1. Enable the traits which have been enabled in the module `load` method
 //!
 //! ~~~
-//! use obs_wrapper::{
+//! use obs::{
 //!     // Everything required for modules
 //!     prelude::*,
 //!     // Everything required for creating a source
@@ -74,7 +74,7 @@
 //!     fn get_ctx(&self) -> &ModuleContext {
 //!         &self.context
 //!     }
-//!    
+//!
 //!     // Load the module - create all sources, returning true if all went well.
 //!     fn load(&mut self, load_context: &mut LoadContext) -> bool {
 //!         // Create the source
@@ -84,14 +84,14 @@
 //!             // enable it.
 //!             .enable_get_name()
 //!             .build();
-//!    
+//!
 //!         // Tell OBS about the source so that it will show it.
 //!         load_context.register_source(source);
-//!    
+//!
 //!         // Nothing could have gone wrong, so return true.
 //!         true
 //!     }
-//!    
+//!
 //!     fn description() -> ObsString {
 //!         obs_string!("A great test module.")
 //!     }
@@ -123,12 +123,20 @@ pub mod log;
 pub mod module;
 /// Tools for creating sources
 pub mod source;
+/// Tools for creating outputs
+pub mod output;
+/// Tools for creating services
+pub mod service;
 /// String macros
 pub mod string;
+/// Properties
+pub mod properties;
 
 /// Re-exports of a bunch of popular tools
 pub mod prelude {
     pub use crate::module::*;
     pub use crate::source::context::*;
+    pub use crate::output::context::*;
+    pub use crate::service::context::*;
     pub use crate::string::*;
 }

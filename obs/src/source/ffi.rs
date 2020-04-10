@@ -1,5 +1,5 @@
 use super::context::{ActiveContext, VideoRenderContext};
-use super::properties::{Properties, Property, SettingsContext};
+use crate::properties::{Properties, Property, SettingsContext};
 use super::traits::*;
 use super::{EnumActiveContext, EnumAllContext, SourceContext};
 use std::ffi::c_void;

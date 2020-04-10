@@ -1,21 +1,6 @@
-[package]
-name = "obs-wrapper"
-version = "0.1.5"
-authors = ["Bennett Hardwick <me@bennetthardwick.com>"]
-edition = "2018"
-license = "GPL-2.0"
-description = "Safe wrapper of obs-sys"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [workspace]
-
 members = [
   "obs-sys",
-  "plugins/scroll-focus-filter"
+  "obs",
+  "obs-copernica"
 ]
-
-[dependencies]
-obs-sys = { path = "./obs-sys", version = "0.1.2" }
-serde_json = "1.0.48"
-paste = "0.1.7"

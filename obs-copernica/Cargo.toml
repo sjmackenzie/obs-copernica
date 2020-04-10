@@ -1,0 +1,12 @@
+[package]
+name = "obs-copernica"
+version = "0.1.0"
+authors = ["Stewart Mackenzie <sjm@fractalide.com>"]
+edition = "2018"
+
+[dependencies]
+obs= { path = "../obs" }
+
+[lib]
+name = "obscopernica"
+crate-type = ["cdylib"]

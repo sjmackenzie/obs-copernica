@@ -1,5 +1,5 @@
 use super::context::{ActiveContext, VideoRenderContext};
-use super::properties::{Properties, SettingsContext};
+use crate::properties::{Properties, SettingsContext};
 use super::{EnumActiveContext, EnumAllContext, SourceContext, SourceType};
 
 use crate::string::ObsString;

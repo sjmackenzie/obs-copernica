@@ -1,11 +1,23 @@
-use crate::source::{traits::Sourceable, SourceInfo, SourceInfoBuilder};
-use crate::string::ObsString;
-use obs_sys::{obs_module_t, obs_register_source_s, obs_source_info};
-use std::marker::PhantomData;
+use {
+    crate::{
+        source::{traits::Sourceable, SourceInfo, SourceInfoBuilder},
+        output::{traits::Outputable, OutputInfo, OutputInfoBuilder},
+        service::{traits::Serviceable, ServiceInfo, ServiceInfoBuilder},
+        string::ObsString,
+    },
+    obs_sys::{obs_module_t,
+        obs_register_source_s, obs_source_info,
+        obs_register_output_s, obs_output_info,
+        obs_register_service_s, obs_service_info,
+    },
+    std::marker::PhantomData,
+};
 
 pub struct LoadContext {
     __marker: PhantomData<()>,
-    sources: Vec<*mut obs_source_info>,
+    sources:  Vec<*mut obs_source_info>,
+    outputs:  Vec<*mut obs_output_info>,
+    services: Vec<*mut obs_service_info>,
 }
 
 impl LoadContext {
@@ -15,12 +27,22 @@ impl LoadContext {
     pub unsafe fn new() -> LoadContext {
         LoadContext {
             __marker: PhantomData,
-            sources: vec![],
+            sources:  vec![],
+            outputs:  vec![],
+            services: vec![],
         }
     }
 
     pub fn create_source_builder<T: Sourceable, D>(&self) -> SourceInfoBuilder<T, D> {
         SourceInfoBuilder::new()
+    }
+
+    pub fn create_output_builder<T: Outputable, D>(&self) -> OutputInfoBuilder<T, D> {
+        OutputInfoBuilder::new()
+    }
+
+    pub fn create_service_builder<T: Serviceable, D>(&self) -> ServiceInfoBuilder<T, D> {
+        ServiceInfoBuilder::new()
     }
 
     pub fn register_source(&mut self, source: SourceInfo) {
@@ -31,12 +53,36 @@ impl LoadContext {
         };
         self.sources.push(pointer);
     }
+
+    pub fn register_output(&mut self, output: OutputInfo) {
+        let pointer = unsafe {
+            let pointer = output.into_raw();
+            obs_register_output_s(pointer, std::mem::size_of::<obs_output_info>() as u64);
+            pointer
+        };
+        self.outputs.push(pointer);
+    }
+
+    pub fn register_service(&mut self, output: ServiceInfo) {
+        let pointer = unsafe {
+            let pointer = output.into_raw();
+            obs_register_service_s(pointer, std::mem::size_of::<obs_service_info>() as u64);
+            pointer
+        };
+        self.services.push(pointer);
+    }
 }
 
 impl Drop for LoadContext {
     fn drop(&mut self) {
         unsafe {
             for pointer in self.sources.drain(..) {
+                drop(Box::from_raw(pointer))
+            }
+            for pointer in self.outputs.drain(..) {
+                drop(Box::from_raw(pointer))
+            }
+            for pointer in self.services.drain(..) {
                 drop(Box::from_raw(pointer))
             }
         }
