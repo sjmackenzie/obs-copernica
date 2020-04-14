@@ -8,6 +8,7 @@ use obs::{
 pub struct CopernicaOutput;
 
 pub struct OutputData {
+    source: OutputContext,
     feed_name: u32,
     feed_owner: u32,
 }
@@ -44,10 +45,12 @@ impl GetPropertiesOutput<OutputData> for CopernicaOutput {
 }
 
 impl CreatableOutput<OutputData> for CopernicaOutput {
-    fn create(settings: &mut SettingsContext, mut _source: OutputContext) -> OutputData {
+    fn create(settings: &mut SettingsContext, mut source: OutputContext) -> OutputData {
         let feed_name  = settings.get_int(obs_string!("feed_name")).unwrap_or(0) as u32;
         let feed_owner = settings.get_int(obs_string!("feed_owner")).unwrap_or(0) as u32;
+        source.update_output_settings(settings);
         return OutputData {
+            source,
             feed_name,
             feed_owner,
         };

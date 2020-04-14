@@ -8,6 +8,7 @@ use obs::{
 pub struct CopernicaSource;
 
 pub struct SourceData {
+    source: SourceContext,
     feed_name: u32,
     feed_owner: u32,
 }
@@ -48,12 +49,14 @@ impl GetPropertiesSource<SourceData> for CopernicaSource {
 }
 
 impl CreatableSource<SourceData> for CopernicaSource {
-    fn create(settings: &mut SettingsContext, mut _source: SourceContext) -> SourceData {
+    fn create(settings: &mut SettingsContext, mut source: SourceContext) -> SourceData {
         let feed_name  = settings.get_int(obs_string!("feed_name")).unwrap_or(0) as u32;
         let feed_owner = settings.get_int(obs_string!("feed_owner")).unwrap_or(0) as u32;
+        source.update_source_settings(settings);
         return SourceData {
             feed_name,
             feed_owner,
+            source,
         };
     }
 }

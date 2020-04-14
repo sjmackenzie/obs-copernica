@@ -1,7 +1,7 @@
-use super::context::{ActiveContext};
 use {
     super::{
         OutputContext,
+        context::{ActiveContext},
     },
     crate::{
         string::ObsString,

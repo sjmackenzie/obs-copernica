@@ -38,7 +38,9 @@ impl Module for CopernicaModule {
         let output = load_context
             .create_output_builder::<CopernicaOutput, OutputData>()
             .enable_get_name()
+            .enable_create()
             .enable_get_properties()
+            .enable_update()
             .build();
         let service = load_context
             .create_service_builder::<CopernicaService, ServiceData>()
@@ -52,7 +54,7 @@ impl Module for CopernicaModule {
     }
 
     fn description() -> ObsString {
-        obs_string!("An OBS plugin that allows users to stream from OBS to directly to other OBS instances in a many-to-many fashion skipping a middle men, like twitch, facebook and youtube.")
+        obs_string!("An OBS plugin that allows users to stream from OBS directly to other OBS instances skipping twitch, facebook and youtube middle men.")
     }
 
     fn name() -> ObsString {

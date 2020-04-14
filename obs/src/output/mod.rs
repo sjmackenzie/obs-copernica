@@ -13,33 +13,12 @@ pub use properties::*;
 pub use traits::*;
 
 use {
-    super::string::ObsString,
+    super::{
+        properties::*,
+        string::ObsString,
+    },
     obs_sys::{
-        obs_output_info, obs_output_t,
-        /*
-        obs_get_output_flags, obs_get_output_properties, obs_output_active, obs_output_addref,
-        obs_output_audio, obs_output_begin_data_capture, obs_output_can_begin_data_capture,
-        obs_output_can_pause, obs_output_create, obs_output_defaults, obs_output_end_data_capture,
-        obs_output_force_stop, obs_output_get_active_delay, obs_output_get_audio_encoder,
-        obs_output_get_congestion, obs_output_get_connect_time_ms, obs_output_get_delay,
-        obs_output_get_display_name, obs_output_get_flags, obs_output_get_frames_dropped,
-        obs_output_get_height, obs_output_get_id, obs_output_get_last_error, obs_output_get_mixer,
-        obs_output_get_mixers, obs_output_get_name, obs_output_get_pause_offset,
-        obs_output_get_proc_handler, obs_output_get_ref, obs_output_get_service,
-        obs_output_get_settings, obs_output_get_signal_handler,
-        obs_output_get_supported_audio_codecs, obs_output_get_supported_video_codecs,
-        obs_output_get_total_bytes, obs_output_get_total_frames, obs_output_get_type_data,
-        obs_output_get_video_encoder, obs_output_get_weak_output, obs_output_get_width,
-        obs_output_initialize_encoders, obs_output_pause, obs_output_paused, obs_output_properties,
-        obs_output_reconnecting, obs_output_release, obs_output_set_audio_conversion,
-        obs_output_set_audio_encoder, obs_output_set_delay, obs_output_set_last_error,
-        obs_output_set_media, obs_output_set_mixer, obs_output_set_mixers,
-        obs_output_set_preferred_size, obs_output_set_reconnect_settings, obs_output_set_service,
-        obs_output_set_video_conversion, obs_output_set_video_encoder, obs_output_signal_stop,
-        obs_output_start, obs_output_stop, obs_output_update, obs_output_video,
-        obs_weak_output_addref, obs_weak_output_get_output, obs_weak_output_references_output,
-        obs_weak_output_release,
-        */
+        obs_output_info, obs_output_t, obs_output_update
     },
     std::marker::PhantomData,
 };
@@ -49,17 +28,16 @@ pub struct OutputContext {
 }
 
 impl OutputContext {
-    /// Run a function on the next output in the filter chain.
-    ///
-    /// Note: only works with outputs that are filters.
-    pub fn do_with_target<F: FnOnce(&mut OutputContext)>(&mut self, func: F) {
-        unsafe {
-        }
-    }
-
-    /// Return a unique id for the filter
     pub fn id(&self) -> usize {
         self.output as usize
+    }
+
+
+
+    pub fn update_output_settings(&mut self, settings: &SettingsContext) {
+        unsafe {
+            obs_output_update(self.output, settings.as_raw());
+        }
     }
 }
 
@@ -90,8 +68,8 @@ impl<T: Outputable, D> OutputInfoBuilder<T, D> {
                 id: T::get_id().as_ptr(),
                 get_name: None,
                 flags: 0,
-                create: None,
-                destroy: None,
+                create: Some(ffi::create_default_data::<D>),
+                destroy: Some(ffi::destroy::<D>),
                 start: None,
                 stop: None,
                 raw_video: None,
@@ -136,5 +114,7 @@ macro_rules! impl_output_builder {
 
 impl_output_builder! {
     get_name => GetNameOutput
+    create => CreatableOutput
     get_properties => GetPropertiesOutput
+    update => UpdateOutput
 }
