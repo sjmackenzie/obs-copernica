@@ -1,5 +1,5 @@
 [package]
-name = "obs-copernica"
+name = "copernica-plugin"
 version = "0.1.0"
 authors = ["Stewart Mackenzie <sjm@fractalide.com>"]
 edition = "2018"
@@ -8,5 +8,5 @@ edition = "2018"
 obs= { path = "../obs" }
 
 [lib]
-name = "obscopernica"
+name = "copernicaplugin"
 crate-type = ["cdylib"]

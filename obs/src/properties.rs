@@ -1,7 +1,7 @@
 use crate::string::ObsString;
 use obs_sys::{
-    obs_data_get_double, obs_data_get_int, obs_data_get_json, obs_data_t, obs_properties_add_float,
-    obs_properties_add_float_slider, obs_properties_add_int, obs_properties_t,
+    obs_data_get_double, obs_data_get_int, obs_text_type, obs_data_get_json, obs_data_t, obs_properties_add_float,
+    obs_properties_add_float_slider, obs_properties_add_int, obs_properties_add_text, obs_properties_t,
 };
 use std::ffi::CStr;
 
@@ -17,6 +17,7 @@ pub(crate) struct Property {
 enum PropertyType {
     Float(f64, f64),
     Int(i32, i32),
+    String,
 }
 
 pub struct Properties<'a> {
@@ -39,6 +40,27 @@ impl<'a> Properties<'a> {
     /// Modifying this pointer could cause UB
     pub unsafe fn into_raw(self) -> *mut obs_properties_t {
         self.pointer
+    }
+
+    pub fn add_text(
+        &mut self,
+        name: ObsString,
+        description: ObsString,
+        property_type: obs_text_type,
+    ) -> &mut Self {
+        unsafe {
+            self.properties.push(Property {
+                name: name.as_str(),
+                property_type: PropertyType::String,
+            });
+            obs_properties_add_text(
+                self.pointer,
+                name.as_ptr(),
+                description.as_ptr(),
+                property_type,
+            );
+        }
+        self
     }
 
     pub fn add_float_slider(
