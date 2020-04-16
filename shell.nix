@@ -15,5 +15,8 @@ let
       rustup
       obs-studio
     ];
+    shellHook = ''
+      export LIBCLANG_PATH="${pkgs.llvmPackages.libclang}/lib";
+    '';
   };
 in shell

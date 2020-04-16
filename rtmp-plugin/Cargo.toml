@@ -6,14 +6,9 @@ edition = "2018"
 
 [dependencies]
 obs= { path = "../obs" }
-cpp_core = "0.6.0"
-qt_core = "0.5.0"
-qt_gui = "0.5.0"
-qt_widgets = "0.5.0"
-qt_ui_tools = "0.5.0"
-
-[build-dependencies]
-qt_ritual_build = "0.5.0"
+rml_rtmp = "0.3.0"
+slab = "0.4.0"
+bytes = "0.5"
 
 [lib]
 name = "rtmpplugin"
